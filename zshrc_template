@@ -51,8 +51,13 @@ prompt_customwifi() {
   local wifiPort=`printf "list" | scutil | grep -m 1 "AirPort" | awk -F "/" '{print $(NF-1)}'`
   # 取得網路卡資訊，因為是外接所以都在USB分類之下
   local lanPort=`networksetup -listallhardwareports | grep  -A2 -i "USB.*LAN"  | grep Device | awk '{print $2}'`
+  if [[$lanPort = '' ]] ; then
+    local signal=$(netstat -S  -I $wifiPort | grep lqm | awk '{print $2}' | tr -d '"')
+    [[ $signal = 'good' ]] && color='green'
+    [[ $signal = 'poor' ]] && color='red'
+    ui="\ufaa8$signal%f"
   # 如果沒有Wifi 或 Ethnernet 狀態是Good 則顯示網卡
-  if [[ $(networksetup -getairportpower $wifiPort |awk '{print $4}') = 'Off' || $(netstat -S -I $lanPort | grep lqm | awk '{print $2}' | tr -d '"' ) = 'good' ]] ; then
+  elseif [[ $(networksetup -getairportpower $wifiPort |awk '{print $4}') = 'Off' || $(netstat -S -I $lanPort | grep lqm | awk '{print $2}' | tr -d '"' ) = 'good' ]] ; then
     ui="\uf6ff"
     color='blue'
   else
