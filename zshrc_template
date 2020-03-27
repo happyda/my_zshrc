@@ -61,10 +61,8 @@ prompt_customwifi() {
     ui="\uf6ff"
     color='blue'
   else
-    local signal=$(netstat -S  -I $wifiPort | grep lqm | awk '{print $2}' | tr -d '"')
-    [[ $signal = 'good' ]] && color='green'
-    [[ $signal = 'poor' ]] && color='red'
-    ui="\ufaa8$signal%f"
+    ui="\uf6ff"
+    color='red'
   fi
 
   $1_prompt_segment "$0" "$2" "black" "$color" "$ui"
