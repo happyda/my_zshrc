@@ -1,0 +1,78 @@
+# 範本來原 https://github.com/Powerlevel9k/powerlevel9k/wiki/show-off-your-config  isar's configuration
+export ZSH="/Users/Starry/.oh-my-zsh"
+
+ZSH_THEME="powerlevel9k/powerlevel9k"
+POWERLEVEL9K_MODE='nerdfont-complete'
+
+# 參數的第3 背景色 第4為前景色 第五為自訂圖示
+prompt_customicon() { $1_prompt_segment "$0" "$2" "none" "248" "\uf823%f" }
+POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX="%F{blue}\u256D\u2500\ue0b3"
+POWERLEVEL9K_CONTEXT_DEFAULT_FOREGROUND='green'
+POWERLEVEL9K_CONTEXT_DEFAULT_BACKGROUND='invalid'
+#POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR=''
+# dir
+POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR='\ue0c6'
+POWERLEVEL9K_SHORTEN_DIR_LENGTH=6
+# git
+POWERLEVEL9K_VCS_CLEAN_FOREGROUND='black'
+POWERLEVEL9K_VCS_CLEAN_BACKGROUND='green'
+POWERLEVEL9K_VCS_UNTRACKED_ICON='\uf0fe'
+POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND='black'
+POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND='darkorange'
+POWERLEVEL9K_VCS_UNSTAGED_ICON='\uf919'
+POWERLEVEL9K_VCS_MODIFIED_FOREGROUND='black'
+POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='yellow'
+POWERLEVEL9K_VCS_HIDE_TAGS='false'
+POWERLEVEL9K_VCS_INCOMING_CHANGES_ICON='\u2193'
+POWERLEVEL9K_VCS_OUTGOING_CHANGES_ICON='\u2191'
+POWERLEVEL9K_VCS_COMMIT_ICON="\uf417"
+# new lines
+POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
+POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
+POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="%F{blue}\u2570\uf460%f "
+# command_execution_time
+POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='black'
+POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='white'
+POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=0
+# time
+POWERLEVEL9K_TIME_BACKGROUND='black'
+POWERLEVEL9K_TIME_FOREGROUND='248'
+POWERLEVEL9K_TIME_FORMAT="%D{%H:%M}"
+POWERLEVEL9K_TIME_ICON=''
+# battery
+POWERLEVEL9K_BATTERY_STAGES=''
+POWERLEVEL9K_BATTERY_VERBOSE=false
+# wifi
+prompt_customwifi() {
+  local ui
+  local color='yellow'
+  local wifiPort=`printf "list" | scutil | grep -m 1 "AirPort" | awk -F "/" '{print $(NF-1)}'`
+  local lanPort=`networksetup -listallhardwareports | grep  -A2 -i "USB.*LAN"  | grep Device | awk '{print $2}'`
+  if [[ $(networksetup -getairportpower $wifiPort |awk '{print $4}') = 'Off' || $(netstat -S -I $lanPort | grep lqm | awk '{print $2}' | tr -d '"' ) = 'good' ]] ; then
+    ui="\uf6ff"
+    color='blue'
+  else
+    local signal=$(netstat -S  -I $wifiPort | grep lqm | awk '{print $2}' | tr -d '"')
+    [[ $signal = 'good' ]] && color='green'
+    [[ $signal = 'poor' ]] && color='red'
+    ui="\ufaa8$signal%f"
+  fi
+
+  $1_prompt_segment "$0" "$2" "black" "$color" "$ui"
+}
+# prompt
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(customicon context ssh root_indicator dir dir_writable vcs)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=( command_execution_time docker_machine status root_indicator background_jobs time battery customwifi)
+#DISABLE_UPDATE_PROMPT=false
+HIST_STAMPS="yyyy-mm-dd"
+
+plugins=(
+  zsh-syntax-highlighting
+  zsh-autosuggestions
+  colored-man-pages
+  docker-compose
+  docker
+)
+
+source $ZSH/oh-my-zsh.sh
