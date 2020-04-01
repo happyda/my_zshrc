@@ -1,4 +1,4 @@
-/bin/sh
+#!/bin/sh
 
 sudo apt-get update ; sudo apt-get -y install zsh curl
 sudo mkdir -p /usr/local/fonts && cd /usr/local/fonts && curl --silent -fLo "Source Code Pro Regular Nerd Font Complete.ttf" https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf
